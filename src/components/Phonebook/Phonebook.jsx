@@ -7,7 +7,7 @@ function Phonebook() {
   const [localContacts, setLocalContacts] = useState([]);
 
   useEffect(() => {
-    const savedContacts = localStorage.getItem("localContacts");
+    const savedContacts = localStorage.getItem('localContacts');
     if (savedContacts) {
       setLocalContacts(JSON.parse(savedContacts));
     }
@@ -15,7 +15,10 @@ function Phonebook() {
 
   const addContact = newContact => {
     setLocalContacts([...localContacts, newContact]);
-    localStorage.setItem('localContacts', JSON.stringify([...localContacts, newContact]));
+    localStorage.setItem(
+      'localContacts',
+      JSON.stringify([...localContacts, newContact])
+    );
   };
 
   const removeContact = id => {
@@ -42,7 +45,16 @@ function Phonebook() {
             <li key={contact.id}>
               {' '}
               <div className={styles.ContactContainer}>
-                {index + 1}. {contact.name}: {contact.number}{' '}
+                <div className={styles.ListContainer}>
+                  <div className={styles.CheckBox}>
+                    <input type="checkbox" />
+                  </div>
+
+                  <div className={styles.ContactList}>
+                    {index + 1}. {contact.name}: {contact.number}{' '}
+                  </div>
+                </div>
+
                 <button
                   onClick={() => removeContact(contact.id)}
                   type="button"
