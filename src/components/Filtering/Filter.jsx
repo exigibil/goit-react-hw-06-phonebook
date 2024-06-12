@@ -4,7 +4,7 @@ import styles from '../Phonebook/Phonebook.module.css';
 import { setFilter } from "../redux/filterSlice";
 import { useDispatch } from 'react-redux';
 
-function ContactFilter({ contacts, setFilteredContacts }) {
+function ContactFilter({ contacts }) {
   const [search, setSearch] = useState('');
   const dispatch = useDispatch();
   
@@ -29,6 +29,6 @@ function ContactFilter({ contacts, setFilteredContacts }) {
 
 ContactFilter.propTypes = {
   contacts: PropTypes.array.isRequired,
-  setFilteredContacts: PropTypes.func.isRequired,
 };
+
 export default ContactFilter;

@@ -26,12 +26,12 @@ function Phonebook() {
 
   return (
     <>
-      <ContactsForm />
+      <ContactsForm contacts={contacts} />
 
       <div className={styles.phonebookContainer}>
         <div className={styles.title}>
           <h2>Contacts List</h2>
-          <ContactFilter/>
+          <ContactFilter contacts={contacts}/>
         </div>
 
         <ul className={styles.phonebookList}>

@@ -1,38 +1,29 @@
-import React, {useState, useEffect } from 'react';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './redux/store'; 
 import Phonebook from './Phonebook/Phonebook';
 
-
 export const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(()=> {
-    const timeout = setTimeout(()=> {
-      setIsLoading(false);
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, []);
-
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101',
-        padding: '90px',
-      }}
-    >
-    {isLoading ? (
-    <p> Loading... </p>
-    ) : (
-    <>
-    <h1>AEM React homework template</h1>
-    <Phonebook />
-    </>
-  )}
-    </div>
+    <Provider store={store}>
+    <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+        <div
+          style={{
+            height: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: 40,
+            color: '#010101',
+            padding: '90px',
+          }}
+        >
+          <h1>AEM React homework template</h1>
+          <Phonebook />
+        </div>
+      </PersistGate>
+    </Provider>
   );
 };
