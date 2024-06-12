@@ -1,47 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styles from './Phonebook.module.css';
 import ContactsForm from 'components/ContactsForm/Contactform';
 import ContactFilter from 'components/Filtering/Filter';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeContact, setContacts } from '../redux/contactsSlice';
+import { selectFilteredContacts } from '../redux/selectors';
 
 function Phonebook() {
-  const [localContacts, setLocalContacts] = useState([]);
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);
+  const filteredContacts = useSelector(selectFilteredContacts);
 
   useEffect(() => {
     const savedContacts = localStorage.getItem('localContacts');
     if (savedContacts) {
-      setLocalContacts(JSON.parse(savedContacts));
+      dispatch(setContacts(JSON.parse(savedContacts)));
     }
-  }, []);
+  }, [dispatch]);
 
-  const addContact = newContact => {
-    setLocalContacts([...localContacts, newContact]);
-    localStorage.setItem(
-      'localContacts',
-      JSON.stringify([...localContacts, newContact])
-    );
-  };
-
-  const removeContact = id => {
-    const updatedContacts = localContacts.filter(contact => contact.id !== id);
-    setLocalContacts(updatedContacts);
+  const handleRemoveContact = (id) => {
+    dispatch(removeContact(id));
+    const updatedContacts = contacts.filter(contact => contact.id !== id);
     localStorage.setItem('localContacts', JSON.stringify(updatedContacts));
   };
 
   return (
     <>
-      <ContactsForm onAddContact={addContact} />
+      <ContactsForm />
 
       <div className={styles.phonebookContainer}>
         <div className={styles.title}>
           <h2>Contacts List</h2>
-          <ContactFilter
-            contacts={localContacts}
-            setFilteredContacts={setLocalContacts}
-          />
+          <ContactFilter/>
         </div>
 
         <ul className={styles.phonebookList}>
-          {localContacts.map((contact, index) => (
+        {filteredContacts.map((contact, index) => (
             <li key={contact.id}>
               {' '}
               <div className={styles.ContactContainer}>
@@ -56,7 +50,7 @@ function Phonebook() {
                 </div>
 
                 <button
-                  onClick={() => removeContact(contact.id)}
+                  onClick={() => handleRemoveContact(contact.id)}
                   type="button"
                   className={styles.buttonContact}
                 >

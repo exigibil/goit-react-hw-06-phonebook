@@ -1,27 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './Contactform.module.css';
-import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../redux/contactsSlice';
 import PropTypes from 'prop-types';
 
-function ContactsForm({ onAddContact }) {
+function ContactsForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const [localContacts, setContacts] = useState([]);
+  const contacts = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const savedContacts = localStorage.getItem("localContacts");
-    if (savedContacts) {
-      setContacts(JSON.parse(savedContacts));
-    }
-  }, []);
-
-  const addContact = () => {
+  const handleAddContact = () => {
     if (!name.trim() || !number.trim()) {
       alert('Please fill in both name and phone number.');
       return;
     }
 
-    const isDuplicate = localContacts.some(
+    const isDuplicate = contacts.some(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
     if (isDuplicate) {
@@ -29,18 +24,7 @@ function ContactsForm({ onAddContact }) {
       return;
     }
 
-    const newContact = {
-      id: nanoid(),
-      name: name,
-      number: number,
-    };
-
-    onAddContact(newContact);
-
-    const updatedContacts = [...localContacts, newContact];
-    setContacts(updatedContacts);
-    localStorage.setItem('localContacts', JSON.stringify(updatedContacts));
-   
+    dispatch(addContact(name, number));
 
     setName('');
     setNumber('');
@@ -59,7 +43,7 @@ function ContactsForm({ onAddContact }) {
         value={name}
         onChange={e => setName(e.target.value)}
         placeholder="Enter your name"
-        required // This makes the field required
+        required 
       />
 
       <p className={styles.title}>Phone Number</p>
@@ -70,10 +54,10 @@ function ContactsForm({ onAddContact }) {
         value={number}
         onChange={e => setNumber(e.target.value)}
         placeholder="Enter your phone number"
-        required // This makes the field required
+        required 
       />
       <button
-        onClick={addContact}
+        onClick={handleAddContact}
         className={styles.buttonContact}
         type="button"
       >
@@ -83,8 +67,9 @@ function ContactsForm({ onAddContact }) {
   );
 }
 
+
 ContactsForm.propTypes = {
-  onAddContact: PropTypes.func.isRequired,
+  contacts: PropTypes.array.isRequired,
 };
 
 export default ContactsForm;

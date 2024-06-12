@@ -1,16 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from '../Phonebook/Phonebook.module.css';
+import { setFilter } from "../redux/filterSlice";
+import { useDispatch } from 'react-redux';
 
 function ContactFilter({ contacts, setFilteredContacts }) {
   const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    const filtered = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(search.toLowerCase())
-    );
-    setFilteredContacts(filtered);
-  }, [search, contacts, setFilteredContacts]);
+  const dispatch = useDispatch();
+  
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+    dispatch(setFilter(value));
+  };
 
   return (
     <div>
@@ -18,7 +20,7 @@ function ContactFilter({ contacts, setFilteredContacts }) {
         className={styles.inputText}
         type="text"
         value={search}
-        onChange={e => setSearch(e.target.value)}
+        onChange={handleSearchChange}
         placeholder="Search by name"
       />
     </div>
@@ -26,14 +28,7 @@ function ContactFilter({ contacts, setFilteredContacts }) {
 }
 
 ContactFilter.propTypes = {
-    contacts: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-            number: PropTypes.string.isRequired,
-        })
-    ).isRequired,
-    setFilteredContacts: PropTypes.func.isRequired,
-}
-
+  contacts: PropTypes.array.isRequired,
+  setFilteredContacts: PropTypes.func.isRequired,
+};
 export default ContactFilter;
